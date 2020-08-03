@@ -1,0 +1,3 @@
+rootProject.name='ch-library'
+include ':app'
+include ':chlibrary'
