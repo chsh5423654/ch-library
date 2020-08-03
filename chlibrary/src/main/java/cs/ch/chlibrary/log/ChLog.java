@@ -4,6 +4,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Administrator
  * DATE on 2020/8/3
@@ -75,12 +78,35 @@ public class ChLog {
             return;
         }
         StringBuilder sb = new StringBuilder();
-        String body = parseBody(contents);
+
+        if (config.includeTread()) {
+            String threadInfo = ChLogConfig.CH_TREAD_FORMATTER.format(Thread.currentThread());
+            sb.append(threadInfo).append("\n");
+        }
+        if (config.stackTraceDepth() > 0) {
+            String stackTrace = ChLogConfig.CH_STACK_TRACE_FORMATTER.format(new Throwable().getStackTrace());
+            sb.append(stackTrace).append("\n");
+        }
+
+        String body = parseBody(contents, config);
         sb.append(body);
-        Log.println(type, tag, body);
+
+        List<ChLogPrinter> printers = config.printers() != null ? Arrays.asList(config.printers()) : ChLogManager.getInstance().getPrinters();
+        if (printers == null) {
+            return;
+        }
+        //打印Log
+        for (ChLogPrinter chLogPrinter : printers) {
+            chLogPrinter.print(config, type, tag, sb.toString());
+        }
     }
 
-    private static String parseBody(@NonNull Object[] contents) {
+    private static String parseBody(@NonNull Object[] contents, ChLogConfig config) {
+
+        if (config.injectJsonParse() != null) {
+            return config.injectJsonParse().toJson(contents);
+        }
+
         StringBuilder sb = new StringBuilder();
         for (Object o : contents) {
             sb.append(o.toString()).append(";");

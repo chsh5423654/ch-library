@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import cs.ch.chlibrary.log.ChLog
+import cs.ch.chlibrary.log.ChLogConfig
+import cs.ch.chlibrary.log.ChLogType
 import cs.ch.library.R
 
 /**
@@ -23,6 +25,17 @@ class ChLogDemoActivity : AppCompatActivity() {
     }
 
     private fun printLog() {
+        //自定义Log配置
+        ChLog.log(object : ChLogConfig() {
+            override fun includeTread(): Boolean {
+                return true
+            }
+
+            override fun stackTraceDepth(): Int {
+                return 0
+            }
+        }, ChLogType.E, "------------", "5566")
+
         ChLog.a("9900")
     }
 
