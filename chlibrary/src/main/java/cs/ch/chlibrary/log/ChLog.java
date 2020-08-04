@@ -14,6 +14,13 @@ import java.util.List;
  */
 public class ChLog {
 
+    private static final String CH_LOG_PACKAGE;
+
+    static {
+        String className = ChLog.class.getName();
+        CH_LOG_PACKAGE = className.substring(0, className.lastIndexOf(".") + 1);
+    }
+
     public static void v(Object... contents) {
         log(ChLogType.V, contents);
     }
@@ -84,7 +91,7 @@ public class ChLog {
             sb.append(threadInfo).append("\n");
         }
         if (config.stackTraceDepth() > 0) {
-            String stackTrace = ChLogConfig.CH_STACK_TRACE_FORMATTER.format(new Throwable().getStackTrace());
+            String stackTrace = ChLogConfig.CH_STACK_TRACE_FORMATTER.format(ChStackTraceUtil.getCroppedRealStackTrack(new Throwable().getStackTrace(), CH_LOG_PACKAGE,config.stackTraceDepth()));
             sb.append(stackTrace).append("\n");
         }
 
@@ -102,11 +109,9 @@ public class ChLog {
     }
 
     private static String parseBody(@NonNull Object[] contents, ChLogConfig config) {
-
         if (config.injectJsonParse() != null) {
             return config.injectJsonParse().toJson(contents);
         }
-
         StringBuilder sb = new StringBuilder();
         for (Object o : contents) {
             sb.append(o.toString()).append(";");

@@ -26,15 +26,15 @@ class ChLogDemoActivity : AppCompatActivity() {
 
     private fun printLog() {
         //自定义Log配置
-        ChLog.log(object : ChLogConfig() {
-            override fun includeTread(): Boolean {
-                return true
-            }
-
-            override fun stackTraceDepth(): Int {
-                return 0
-            }
-        }, ChLogType.E, "------------", "5566")
+//        ChLog.log(object : ChLogConfig() {
+//            override fun includeTread(): Boolean {
+//                return true
+//            }
+//
+//            override fun stackTraceDepth(): Int {
+//                return 0
+//            }
+//        }, ChLogType.E, "------------", "5566")
 
         ChLog.a("9900")
     }

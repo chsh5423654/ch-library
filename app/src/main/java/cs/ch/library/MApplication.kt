@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import cs.ch.chlibrary.log.ChConsolePrinter
 import cs.ch.chlibrary.log.ChLogConfig
 import cs.ch.chlibrary.log.ChLogManager
-import cs.ch.chlibrary.log.ChLogPrinter
 
 /**
  * @author  Administrator
