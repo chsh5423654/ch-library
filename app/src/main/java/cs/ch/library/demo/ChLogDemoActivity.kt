@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import cs.ch.chlibrary.log.ChLog
-import cs.ch.chlibrary.log.ChLogConfig
-import cs.ch.chlibrary.log.ChLogType
+import cs.ch.chlibrary.log.*
 import cs.ch.library.R
 
 /**
@@ -16,12 +14,17 @@ import cs.ch.library.R
  */
 class ChLogDemoActivity : AppCompatActivity() {
 
+    var viewPrinter: ChViewPrinter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ch_log_demo)
         findViewById<View>(R.id.btn_CLog).setOnClickListener {
             printLog()
         }
+        viewPrinter = ChViewPrinter(this)
+        viewPrinter!!.viewProvider.showFloatingView();
+
     }
 
     private fun printLog() {
@@ -36,6 +39,7 @@ class ChLogDemoActivity : AppCompatActivity() {
 //            }
 //        }, ChLogType.E, "------------", "5566")
 
+        ChLogManager.getInstance().addPrinter(viewPrinter);
         ChLog.a("9900")
     }
 

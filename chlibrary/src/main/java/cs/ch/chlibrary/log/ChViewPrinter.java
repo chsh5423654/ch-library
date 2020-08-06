@@ -26,9 +26,12 @@ public class ChViewPrinter implements ChLogPrinter {
     private RecyclerView recyclerView;
     private LogAdapter adapter;
 
+    private ChViewPrinterProvider chViewPrinterProvider;
+
     @Override
     public void print(@NonNull ChLogConfig config, int level, String tag, @NonNull String printString) {
-
+        adapter.addItem(new ChLogMo(System.currentTimeMillis(), level, tag, printString));
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     public ChViewPrinter(Activity activity) {
@@ -38,7 +41,20 @@ public class ChViewPrinter implements ChLogPrinter {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(recyclerView.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
+        chViewPrinterProvider = new ChViewPrinterProvider(rootView, recyclerView);
     }
+
+
+    /**
+     * 获取ViewProvider ,通过 ViewProvider 可以控制log识图的展示和隐藏
+     *
+     * @return
+     */
+    @NonNull
+    public ChViewPrinterProvider getViewProvider() {
+        return chViewPrinterProvider;
+    }
+
 
     private static class LogAdapter extends RecyclerView.Adapter<LogViewHolder> {
 
@@ -65,13 +81,16 @@ public class ChViewPrinter implements ChLogPrinter {
         @Override
         public void onBindViewHolder(@NonNull LogViewHolder holder, int position) {
             ChLogMo chLogMo = logs.get(position);
-
-
+            int color = getHighlightColor(chLogMo.level);
+            holder.tv_tag.setTextColor(color);
+            holder.tv_message.setTextColor(color);
+            holder.tv_tag.setText(chLogMo.getFlatened());
+            holder.tv_message.setText(chLogMo.log);
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return logs.size();
         }
 
         /**
